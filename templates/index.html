@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Glam AI — Mirror</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #eee;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            text-align: center;
+            padding-top: 30px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        h1 {
+            font-weight: 300;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #ff6ec4, #7873f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        img {
+            border-radius: 16px;
+            border: 2px solid #444;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+        .card {
+            background: rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 24px;
+            width: 260px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            backdrop-filter: blur(6px);
+        }
+        .card h2 {
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+            margin-bottom: 16px;
+        }
+        .swatch {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            border: 4px solid rgba(255,255,255,0.2);
+            transition: background-color 0.4s ease;
+        }
+        .undertone-label {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .hex-code {
+            font-size: 14px;
+            color: #999;
+            font-family: monospace;
+        }
+        .palette {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .color-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+        .color-btn:hover {
+            transform: scale(1.15);
+        }
+        .color-btn.selected {
+            border-color: #fff;
+            box-shadow: 0 0 8px rgba(255,255,255,0.6);
+        }
+        #status {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>GLAM AI — VIRTUAL MIRROR</h1>
+
+    <div class="container">
+        <div>
+            <img src="{{ url_for('video_feed') }}" width="640" height="480">
+            <div id="status">Checking face detection status...</div>
+        </div>
+
+        <div class="card">
+            <h2>Skin Undertone</h2>
+            <div class="swatch" id="swatch" style="background-color:#888;"></div>
+            <div class="undertone-label" id="undertone-label">Analyzing...</div>
+            <div class="hex-code" id="hex-code">—</div>
+        </div>
+
+        <div class="card">
+            <h2>Lipstick Shade</h2>
+            <div class="palette">
+                <div class="color-btn selected" style="background:#c2185b" data-hex="#c2185b" title="Classic Red"></div>
+                <div class="color-btn" style="background:#ad1457" data-hex="#ad1457" title="Berry"></div>
+                <div class="color-btn" style="background:#d84315" data-hex="#d84315" title="Coral"></div>
+                <div class="color-btn" style="background:#8d6e63" data-hex="#8d6e63" title="Nude"></div>
+                <div class="color-btn" style="background:#6a1b9a" data-hex="#6a1b9a" title="Plum"></div>
+                <div class="color-btn" style="background:#e91e63" data-hex="#e91e63" title="Pink"></div>
+            </div>
+            <div class="hex-code" id="lipstick-hex-code">#C2185B</div>
+        </div>
+
+        <div class="card">
+            <h2>Try On Your Earrings</h2>
+            <p style="font-size:13px; color:#aaa; margin-bottom:12px;">
+                Upload a photo of an earring — background is removed automatically.
+            </p>
+            <input type="file" id="earring-upload" accept="image/*" style="margin-bottom:10px;">
+            <div id="earring-preview" style="margin: 8px 0;"></div>
+            <div id="earring-status" style="font-size:13px; color:#9f9;"></div>
+            <button id="clear-earring-btn" style="margin-top:8px; padding:6px 14px; border-radius:8px; border:none; background:#444; color:#eee; cursor:pointer;">
+                Use Default Studs Instead
+            </button>
+
+            <div style="margin-top:14px; text-align:left;">
+                <label style="font-size:12px; color:#aaa;">Size</label>
+                <input type="range" id="earring-scale" min="0.3" max="3.0" step="0.05" value="1.0"
+                       style="width:100%;">
+
+                <label style="font-size:12px; color:#aaa;">Horizontal Position</label>
+                <input type="range" id="earring-horizontal" min="-0.3" max="0.3" step="0.01" value="0"
+                       style="width:100%;">
+
+                <label style="font-size:12px; color:#aaa;">Vertical Position</label>
+                <input type="range" id="earring-vertical" min="-0.3" max="0.3" step="0.01" value="0"
+                       style="width:100%;">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Try On a Necklace</h2>
+            <p style="font-size:13px; color:#aaa; margin-bottom:12px;">
+                Upload a photo of a necklace — anchored to your shoulders.
+            </p>
+            <input type="file" id="necklace-upload" accept="image/*" style="margin-bottom:10px;">
+            <div id="necklace-preview" style="margin: 8px 0;"></div>
+            <div id="necklace-status" style="font-size:13px; color:#9f9;"></div>
+
+            <div style="margin-top:14px; text-align:left;">
+                <label style="font-size:12px; color:#aaa;">Vertical Position</label>
+                <input type="range" id="necklace-offset" min="-0.4" max="0.4" step="0.01" value="0"
+                       style="width:100%;">
+
+                <label style="font-size:12px; color:#aaa;">Size</label>
+                <input type="range" id="necklace-scale" min="0.4" max="2.0" step="0.05" value="1.0"
+                       style="width:100%;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function pollStatus() {
+            try {
+                const res = await fetch('/status');
+                const data = await res.json();
+                document.getElementById('status').innerText =
+                    data.faces_detected > 0
+                        ? `✅ Face detected (${data.faces_detected})`
+                        : "⚠️ No face detected — center your face in frame";
+            } catch (e) {
+                document.getElementById('status').innerText = "Status check failed.";
+            }
+        }
+
+        async function pollSkinTone() {
+            try {
+                const res = await fetch('/skin_tone');
+                const data = await res.json();
+                if (data.hex) {
+                    document.getElementById('swatch').style.backgroundColor = data.hex;
+                    document.getElementById('undertone-label').innerText = data.undertone;
+                    document.getElementById('hex-code').innerText = data.hex.toUpperCase();
+                }
+            } catch (e) {
+                document.getElementById('undertone-label').innerText = "Unavailable";
+            }
+        }
+
+        setInterval(pollStatus, 1000);
+        setInterval(pollSkinTone, 1000);
+        pollStatus();
+        pollSkinTone();
+
+        // Lipstick color picker
+        document.querySelectorAll('.color-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const hex = btn.dataset.hex;
+                document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                document.getElementById('lipstick-hex-code').innerText = hex.toUpperCase();
+
+                try {
+                    await fetch('/set_lipstick', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ hex })
+                    });
+                } catch (e) {
+                    console.error('Failed to set lipstick color', e);
+                }
+            });
+        });
+
+        // Earring upload
+        const earringInput = document.getElementById('earring-upload');
+        const earringStatus = document.getElementById('earring-status');
+        const earringPreview = document.getElementById('earring-preview');
+
+        earringInput.addEventListener('change', async () => {
+            const file = earringInput.files[0];
+            if (!file) return;
+
+            // Show a quick local preview while uploading
+            const reader = new FileReader();
+            reader.onload = e => {
+                earringPreview.innerHTML = `<img src="${e.target.result}" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:#222;">`;
+            };
+            reader.readAsDataURL(file);
+
+            earringStatus.innerText = "Removing background & processing...";
+            earringStatus.style.color = "#ff9";
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/upload_earring', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    earringStatus.innerText = "✅ Wearing your uploaded earring!";
+                    earringStatus.style.color = "#9f9";
+                } else {
+                    earringStatus.innerText = "⚠️ " + (data.error || "Upload failed");
+                    earringStatus.style.color = "#f99";
+                }
+            } catch (e) {
+                earringStatus.innerText = "⚠️ Upload failed — check server is running.";
+                earringStatus.style.color = "#f99";
+            }
+        });
+
+        document.getElementById('clear-earring-btn').addEventListener('click', async () => {
+            try {
+                await fetch('/set_jewelry_style', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ style: 'stud' })
+                });
+                earringStatus.innerText = "Switched back to default studs.";
+                earringStatus.style.color = "#9f9";
+                earringPreview.innerHTML = '';
+                earringInput.value = '';
+            } catch (e) {
+                console.error('Failed to reset jewelry style', e);
+            }
+        });
+
+        // Necklace upload
+        const necklaceInput = document.getElementById('necklace-upload');
+        const necklaceStatus = document.getElementById('necklace-status');
+        const necklacePreview = document.getElementById('necklace-preview');
+
+        necklaceInput.addEventListener('change', async () => {
+            const file = necklaceInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                necklacePreview.innerHTML = `<img src="${e.target.result}" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:#222;">`;
+            };
+            reader.readAsDataURL(file);
+
+            necklaceStatus.innerText = "Removing background & processing...";
+            necklaceStatus.style.color = "#ff9";
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/upload_necklace', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    necklaceStatus.innerText = "✅ Wearing your uploaded necklace!";
+                    necklaceStatus.style.color = "#9f9";
+                } else {
+                    necklaceStatus.innerText = "⚠️ " + (data.error || "Upload failed");
+                    necklaceStatus.style.color = "#f99";
+                }
+            } catch (e) {
+                necklaceStatus.innerText = "⚠️ Upload failed — check server is running.";
+                necklaceStatus.style.color = "#f99";
+            }
+        });
+
+        // Necklace position/size sliders — live-adjustable since necklace
+        // photos vary a lot in proportions
+        async function sendNecklaceAdjustment(payload) {
+            try {
+                await fetch('/adjust_necklace', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {
+                console.error('Failed to adjust necklace', e);
+            }
+        }
+
+        const necklaceOffsetSlider = document.getElementById('necklace-offset');
+        const necklaceScaleSlider = document.getElementById('necklace-scale');
+
+        necklaceOffsetSlider.addEventListener('input', () => {
+            sendNecklaceAdjustment({ offset_adjust: parseFloat(necklaceOffsetSlider.value) });
+        });
+
+        necklaceScaleSlider.addEventListener('input', () => {
+            sendNecklaceAdjustment({ scale_adjust: parseFloat(necklaceScaleSlider.value) });
+        });
+
+        // Earring size slider
+        const earringScaleSlider = document.getElementById('earring-scale');
+        earringScaleSlider.addEventListener('input', async () => {
+            try {
+                await fetch('/adjust_earring', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ scale_adjust: parseFloat(earringScaleSlider.value) })
+                });
+            } catch (e) {
+                console.error('Failed to adjust earring size', e);
+            }
+        });
+
+        // Earring horizontal position slider
+        const earringHorizontalSlider = document.getElementById('earring-horizontal');
+        earringHorizontalSlider.addEventListener('input', async () => {
+            try {
+                await fetch('/adjust_earring', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ horizontal_adjust: parseFloat(earringHorizontalSlider.value) })
+                });
+            } catch (e) {
+                console.error('Failed to adjust earring position', e);
+            }
+        });
+
+        // Earring vertical position slider
+        const earringVerticalSlider = document.getElementById('earring-vertical');
+        earringVerticalSlider.addEventListener('input', async () => {
+            try {
+                await fetch('/adjust_earring', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ vertical_adjust: parseFloat(earringVerticalSlider.value) })
+                });
+            } catch (e) {
+                console.error('Failed to adjust earring position', e);
+            }
+        });
+    </script>
+</body>
+</html>

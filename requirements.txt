@@ -1,0 +1,7 @@
+flask
+opencv-python
+mediapipe==0.10.14
+numpy
+scikit-learn
+requests
+rembg
