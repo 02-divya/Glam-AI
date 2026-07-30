@@ -3,7 +3,9 @@ import numpy as np
 import cv2
 from camera import (generate_frames, latest_status, latest_skin_tone,
                      current_lipstick, current_jewelry, set_uploaded_earring,
-                     set_uploaded_necklace, current_necklace)
+                     set_uploaded_necklace, current_necklace, current_foundation)
+from commerce.deal_finder import find_best_deal
+from analysis.product_match import extract_product_color, judge_foundation_match, judge_lipstick_match
 
 app = Flask(__name__)
 
@@ -27,6 +29,21 @@ def status():
 @app.route('/skin_tone')
 def skin_tone():
     return jsonify(latest_skin_tone)
+
+
+@app.route('/best_deal')
+def best_deal():
+    undertone = latest_skin_tone.get("undertone")
+    product_type = request.args.get("product_type", "lipstick")
+
+    if not undertone:
+        return jsonify({"success": False, "error": "No skin tone detected yet — make sure your face is in frame."}), 400
+
+    deal = find_best_deal(undertone, product_type)
+    if not deal:
+        return jsonify({"success": False, "error": f"No {product_type} matches found for undertone '{undertone}'."}), 404
+
+    return jsonify({"success": True, "undertone": undertone, "deal": deal})
 
 
 @app.route('/set_lipstick', methods=['POST'])
@@ -131,6 +148,96 @@ def adjust_necklace():
     if 'scale_adjust' in data:
         current_necklace['scale_adjust'] = float(data['scale_adjust'])
     return jsonify({"success": True, **current_necklace})
+
+
+@app.route('/upload_lipstick_product', methods=['POST'])
+def upload_lipstick_product():
+    file = request.files.get('image')
+    if not file:
+        return jsonify({"success": False, "error": "no file provided"}), 400
+
+    raw_bytes = file.read()
+
+    try:
+        result = extract_product_color(raw_bytes)
+    except RuntimeError as e:
+        return jsonify({
+            "success": False,
+            "error": f"{e} First use requires internet access to download the rembg model."
+        }), 500
+
+    if result is None:
+        return jsonify({"success": False, "error": "Couldn't isolate a clear product color from that photo. Try a closer, more clearly-lit shot."}), 400
+
+    hex_code, rgb = result
+
+    # Apply it live as the current lipstick color
+    current_lipstick['hex'] = hex_code
+
+    skin_undertone = latest_skin_tone.get("undertone")
+    if not skin_undertone:
+        match = None
+        match_note = "Applied the shade — face isn't detected yet, so we can't judge the match until you're in frame."
+    else:
+        match = judge_lipstick_match(rgb, skin_undertone)
+        match_note = None
+
+    return jsonify({
+        "success": True,
+        "hex": hex_code,
+        "match": match,
+        "match_note": match_note
+    })
+
+
+@app.route('/upload_foundation_product', methods=['POST'])
+def upload_foundation_product():
+    file = request.files.get('image')
+    if not file:
+        return jsonify({"success": False, "error": "no file provided"}), 400
+
+    raw_bytes = file.read()
+
+    try:
+        result = extract_product_color(raw_bytes)
+    except RuntimeError as e:
+        return jsonify({
+            "success": False,
+            "error": f"{e} First use requires internet access to download the rembg model."
+        }), 500
+
+    if result is None:
+        return jsonify({"success": False, "error": "Couldn't isolate a clear product color from that photo. Try a closer, more clearly-lit shot."}), 400
+
+    hex_code, rgb = result
+
+    # Apply it live as the current foundation color
+    current_foundation['hex'] = hex_code
+    current_foundation['enabled'] = True
+
+    skin_hex = latest_skin_tone.get("hex")
+    if not skin_hex:
+        match = None
+        match_note = "Applied the shade — face isn't detected yet, so we can't judge the match until you're in frame."
+    else:
+        # convert stored skin hex back to rgb for comparison
+        skin_rgb = tuple(int(skin_hex.lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
+        match = judge_foundation_match(rgb, skin_rgb)
+        match_note = None
+
+    return jsonify({
+        "success": True,
+        "hex": hex_code,
+        "match": match,
+        "match_note": match_note
+    })
+
+
+@app.route('/clear_foundation', methods=['POST'])
+def clear_foundation():
+    current_foundation['enabled'] = False
+    current_foundation['hex'] = None
+    return jsonify({"success": True})
 
 
 if __name__ == '__main__':

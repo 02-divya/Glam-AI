@@ -4,14 +4,19 @@ from analysis.skin_tone import get_roi, dominant_color, LEFT_CHEEK_IDX, SkinTone
 from ar.lipstick import apply_lipstick, hex_to_bgr
 from ar.jewelry import apply_jewelry, apply_uploaded_earrings
 from ar.necklace import apply_necklace
+from ar.foundation import apply_foundation
 
 smoother = SkinToneSmoother(window_size=15, switch_threshold=5)
 
-# Shared lipstick color state — default classic red
-current_lipstick = {"hex": "#c2185b"}
+# Shared lipstick color state — no default shade, only set via product upload
+current_lipstick = {"hex": None}
+
+# Shared foundation state — set via /upload_foundation route
+current_foundation = {"enabled": False, "hex": None}
 
 # Shared jewelry state. style: "stud", "hoop", or "uploaded". scale/horizontal/vertical tunable live.
-current_jewelry = {"enabled": True, "style": "stud", "scale_adjust": 1.0, "horizontal_adjust": 0.0, "vertical_adjust": 0.0}
+# Off by default — no default studs until the user uploads an earring or explicitly enables them.
+current_jewelry = {"enabled": False, "style": "stud", "scale_adjust": 1.0, "horizontal_adjust": 0.0, "vertical_adjust": 0.0}
 uploaded_earring = {"rgba": None}  # set via /upload_earring route in app.py
 
 # Shared necklace state — offset_adjust/scale_adjust are tuned live via UI sliders
@@ -23,6 +28,7 @@ def set_uploaded_earring(rgba_image):
     """Called from app.py after background removal to set the active earring image."""
     uploaded_earring["rgba"] = rgba_image
     current_jewelry["style"] = "uploaded"
+    current_jewelry["enabled"] = True
 
 
 def set_uploaded_necklace(rgba_image):
@@ -89,10 +95,17 @@ def generate_frames():
             for landmarks in results.multi_face_landmarks:
                 h, w, _ = frame.shape
 
+                # Foundation is the base layer — applied before lipstick/jewelry
+                if current_foundation["enabled"] and current_foundation["hex"]:
+                    frame = apply_foundation(frame, landmarks.landmark, w, h,
+                                              color_bgr=hex_to_bgr(current_foundation["hex"]),
+                                              alpha=0.35)
+
                 # Apply lipstick BEFORE drawing mesh dots so dots stay visible on top
-                lip_color_bgr = hex_to_bgr(current_lipstick["hex"])
-                frame = apply_lipstick(frame, landmarks.landmark, w, h,
-                                        color_bgr=lip_color_bgr, alpha=0.45)
+                if current_lipstick["hex"]:
+                    lip_color_bgr = hex_to_bgr(current_lipstick["hex"])
+                    frame = apply_lipstick(frame, landmarks.landmark, w, h,
+                                            color_bgr=lip_color_bgr, alpha=0.45)
 
                 # Apply jewelry — either a real uploaded photo or a drawn placeholder
                 if current_jewelry["enabled"]:
@@ -107,11 +120,6 @@ def generate_frames():
                                                style=current_jewelry["style"],
                                                horizontal_adjust=current_jewelry["horizontal_adjust"],
                                                vertical_adjust=current_jewelry["vertical_adjust"])
-
-                # Draw the mesh dots
-                for lm in landmarks.landmark:
-                    x, y = int(lm.x * w), int(lm.y * h)
-                    cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
 
                 # Run skin tone analysis periodically (not every frame — it's
                 # heavier work and doesn't need to be instant)

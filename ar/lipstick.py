@@ -8,20 +8,36 @@ LIPS_OUTER_IDX = [
     375, 321, 405, 314, 17, 84, 181, 91, 146
 ]
 
+# Inner lip contour — used to punch a hole out of the outer mask so lipstick
+# only colors the actual lips, not teeth/tongue/mouth interior when the
+# mouth is open
+LIPS_INNER_IDX = [
+    78, 191, 80, 81, 82, 13, 312, 311, 310, 415,
+    308, 324, 318, 402, 317, 14, 87, 178, 88, 95
+]
+
 
 def apply_lipstick(frame, landmarks, w, h, color_bgr=(0, 0, 200), alpha=0.45):
     """
-    Overlay a translucent color on the lips using a convex-hull mask
-    built from the outer lip landmarks, alpha-blended onto the frame.
+    Overlay a translucent color on the lips using a convex-hull mask built
+    from the outer lip landmarks, with the inner-mouth region subtracted
+    out so an open mouth doesn't get teeth/tongue tinted along with the lips.
     """
-    points = np.array([
+    outer_points = np.array([
         (int(landmarks[i].x * w), int(landmarks[i].y * h))
         for i in LIPS_OUTER_IDX
     ])
+    inner_points = np.array([
+        (int(landmarks[i].x * w), int(landmarks[i].y * h))
+        for i in LIPS_INNER_IDX
+    ])
 
     mask = np.zeros(frame.shape[:2], dtype=np.uint8)
-    hull = cv2.convexHull(points)
-    cv2.fillConvexPoly(mask, hull, 255)
+    outer_hull = cv2.convexHull(outer_points)
+    cv2.fillConvexPoly(mask, outer_hull, 255)
+
+    inner_hull = cv2.convexHull(inner_points)
+    cv2.fillConvexPoly(mask, inner_hull, 0)  # punch out the mouth interior
 
     # Slight blur on the mask edge so the tint doesn't look hard-edged/pasted-on
     mask = cv2.GaussianBlur(mask, (5, 5), 0)
