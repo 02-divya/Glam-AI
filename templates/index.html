@@ -4,72 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glam Mirror — AI Stylist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #241018;
-            --bg-deep: #1a0c12;
-            --panel: #2f1620;
-            --panel-soft: rgba(255,255,255,0.03);
-            --gold: #c9a24b;
-            --gold-bright: #e8c877;
-            --gold-line: rgba(201,162,75,0.35);
-            --ivory: #f5ece6;
-            --muted: #b79aa0;
-            --rose: #d68089;
-            --success: #8fd19e;
-            --danger: #e08b8b;
-            --warn: #e8c877;
+            /* ---- Ethereal Radiance palette, mapped onto our existing token names ---- */
+            --bg: #fcf9f8;
+            --bg-deep: #1b1c1c;
+            --panel: #ffffff;
+            --panel-soft: #f5e6e0;
+            --gold: #8a6d10;
+            --gold-bright: #8a6d10;
+            --gold-line: #d1c4be;
+            --ivory: #1b1c1c;
+            --muted: #4e4541;
+            --rose: #a54a44;
+            --success: #6b8f6a;
+            --danger: #a54a44;
+            --warn: #735c00;
+
+            /* ---- New tokens for the glass / soft-minimalism treatment ---- */
+            --primary: #675c58;
+            --on-primary: #ffffff;
+            --primary-container: #f5e6e0;
+            --on-primary-container: #716662;
+            --surface-low: #f6f3f2;
+            --surface-band: #f0eded;
+            --outline: #807570;
+            --shadow-tint: rgba(103,92,88,0.10);
         }
 
         * { box-sizing: border-box; }
 
         body {
-            background:
-                radial-gradient(ellipse 900px 500px at 50% -10%, rgba(201,162,75,0.09), transparent),
-                var(--bg);
+            background: var(--bg);
             color: var(--ivory);
             font-family: 'Manrope', sans-serif;
             margin: 0;
-            padding: 48px 24px 80px;
+            padding: 0 0 80px;
             min-height: 100vh;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+            font-size: 20px;
+        }
+
+        /* ---------- Glass nav ---------- */
+        .glass-nav {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 40px;
+            background: rgba(252,249,248,0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,0.4);
+            box-shadow: 0 20px 40px rgba(103,92,88,0.06);
+        }
+        .glass-nav .brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 0.04em;
+            color: var(--ivory);
+        }
+        .glass-nav .tag {
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--muted);
         }
 
         /* ---------- Header ---------- */
         .eyebrow {
             text-align: center;
-            font-size: 12px;
-            letter-spacing: 3px;
+            font-size: 11px;
+            letter-spacing: 0.22em;
             text-transform: uppercase;
-            color: var(--gold);
-            font-weight: 700;
-            margin-bottom: 14px;
+            color: var(--muted);
+            font-weight: 600;
+            margin-bottom: 16px;
         }
         h1 {
-            font-family: 'Fraunces', serif;
-            font-style: italic;
-            font-weight: 500;
-            font-size: clamp(36px, 5vw, 56px);
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: clamp(34px, 4.5vw, 52px);
+            line-height: 1.1;
             text-align: center;
-            margin: 0 0 16px;
+            margin: 0 0 18px;
             color: var(--ivory);
-            letter-spacing: 0.5px;
+            letter-spacing: -0.01em;
         }
-        .rule {
-            width: 72px;
-            height: 2px;
-            margin: 0 auto 18px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        h1 em {
+            font-style: italic;
+            font-weight: 600;
+            color: var(--primary);
         }
         .subtitle {
             text-align: center;
-            font-size: 14px;
+            font-size: 17px;
             color: var(--muted);
-            max-width: 480px;
-            margin: 0 auto 48px;
+            max-width: 460px;
+            margin: 0 auto 44px;
             line-height: 1.6;
+        }
+        .hero-top {
+            padding: 56px 20px 8px;
         }
 
         /* ---------- Mirror hero ---------- */
@@ -77,156 +125,170 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            padding: 0 20px;
         }
+        .mirror-slot:empty { display: none; }
+        .mirror-slot { margin-bottom: 8px; }
         .mirror-frame {
             position: relative;
+            border-radius: 24px;
+            background: var(--panel);
+            box-shadow: 0 30px 60px var(--shadow-tint), 0 2px 0 rgba(255,255,255,0.6) inset;
             padding: 10px;
-            border-radius: 200px 200px 28px 28px;
-            background: linear-gradient(160deg, var(--gold-bright), var(--gold) 40%, #8a6a2c);
-            box-shadow:
-                0 24px 60px rgba(0,0,0,0.55),
-                0 0 0 1px rgba(0,0,0,0.2);
-        }
-        .mirror-frame::after {
-            content: "";
-            position: absolute;
-            left: 50%;
-            bottom: -34px;
-            transform: translateX(-50%);
-            width: 14px;
-            height: 40px;
-            background: linear-gradient(180deg, var(--gold), #6b511f);
-            border-radius: 0 0 6px 6px;
         }
         .mirror-inner {
-            border-radius: 190px 190px 20px 20px;
+            border-radius: 17px;
             overflow: hidden;
             background: #000;
-            box-shadow: inset 0 0 0 3px rgba(0,0,0,0.35);
         }
         .mirror-inner img {
             display: block;
-            width: 640px;
+            width: 560px;
             max-width: 82vw;
             height: auto;
         }
+
+        /* ---------- Glass status chips ---------- */
         #status {
-            margin-top: 52px;
+            margin-top: 20px;
             font-size: 13px;
             font-weight: 600;
-            padding: 8px 18px;
+            padding: 9px 18px;
             border-radius: 999px;
-            background: var(--panel-soft);
-            border: 1px solid var(--gold-line);
+            background: rgba(255,253,249,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 10px 24px var(--shadow-tint);
             color: var(--success);
         }
-
-        /* ---------- Tray section ---------- */
-        .tray-label {
-            text-align: center;
-            font-size: 12px;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin: 56px 0 24px;
-        }
-        .tray-label::before,
-        .tray-label::after {
-            content: "";
-            display: inline-block;
-            width: 30px;
-            height: 1px;
-            background: var(--gold-line);
-            vertical-align: middle;
-            margin: 0 12px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 22px;
-            max-width: 1180px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: var(--panel);
-            border: 1px solid var(--gold-line);
-            border-radius: 16px;
-            padding: 26px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-        }
-        .card-head {
+        .undertone-strip {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 10px;
-        }
-        .badge {
-            flex: none;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            border: 1px solid var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Fraunces', serif;
-            font-style: italic;
-            font-weight: 600;
-            color: var(--gold-bright);
-            font-size: 15px;
-        }
-        .card h2 {
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--ivory);
-            font-weight: 700;
-            margin: 0;
-        }
-        .card-divider {
-            height: 1px;
-            background: var(--gold-line);
-            margin: 14px 0 18px;
-        }
-        .card p.desc {
-            font-size: 13px;
-            color: var(--muted);
-            line-height: 1.6;
-            margin: 0 0 16px;
-        }
-
-        /* ---------- Undertone card ---------- */
-        .swatch-row {
-            display: flex;
-            align-items: center;
-            gap: 18px;
+            margin-top: 14px;
+            padding: 9px 18px 9px 9px;
+            border-radius: 999px;
+            background: rgba(255,253,249,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 10px 24px var(--shadow-tint);
         }
         .swatch {
-            width: 64px;
-            height: 64px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             flex: none;
-            border: 3px solid var(--gold-line);
-            box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px var(--gold-line);
             transition: background-color 0.4s ease;
         }
-        .undertone-label {
-            font-family: 'Fraunces', serif;
-            font-weight: 600;
-            font-size: 22px;
-            margin-bottom: 2px;
-        }
+        .undertone-text { line-height: 1.25; }
+        .undertone-label { font-size: 13px; font-weight: 700; }
         .hex-code {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--muted);
             font-family: 'Manrope', monospace;
             letter-spacing: 0.5px;
         }
 
-        /* ---------- Inputs, buttons, sliders ---------- */
+        /* ---------- Sections ---------- */
+        .section {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .section-head {
+            text-align: center;
+            margin: 40px 0 28px;
+        }
+        .section-head .eyebrow { margin-bottom: 10px; }
+        .section-head h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: clamp(26px, 3vw, 36px);
+            color: var(--ivory);
+            margin: 0 0 8px;
+        }
+        .section-head p {
+            font-size: 14px;
+            color: var(--muted);
+            margin: 0;
+        }
+        .section-band {
+            background: var(--surface-low);
+            padding: 8px 0 56px;
+            margin-top: 64px;
+        }
+        .section-band .section-head { padding-top: 40px; margin-top: 0; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .grid-narrow { max-width: 440px; margin: 0 auto; }
+
+        .card {
+            background: var(--panel);
+            border-radius: 20px;
+            padding: 26px;
+            box-shadow: 0 16px 40px var(--shadow-tint);
+            transition: transform 0.2s cubic-bezier(0.2,0.8,0.2,1), box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 22px 50px var(--shadow-tint);
+        }
+        .category-card {
+            cursor: pointer;
+            text-align: center;
+        }
+        .category-card .badge {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 14px;
+        }
+        .category-card .badge .material-symbols-outlined { font-size: 30px; }
+        .category-card h2 { font-size: 19px; }
+        .category-card .card-head { flex-direction: column; }
+        .back-link {
+            margin-bottom: 8px;
+        }
+        .card-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 4px;
+        }
+        .badge {
+            flex: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--primary-container);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--ivory);
+            margin: 0;
+        }
+        .card p.desc {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.6;
+            margin: 12px 0 16px;
+        }
+
+        /* ---------- Inputs, buttons ---------- */
         input[type="file"] {
             width: 100%;
             font-size: 12px;
@@ -234,14 +296,14 @@
             margin-bottom: 12px;
         }
         input[type="file"]::file-selector-button {
-            background: var(--panel-soft);
-            border: 1px solid var(--gold-line);
-            color: var(--ivory);
-            padding: 7px 14px;
-            border-radius: 8px;
+            background: var(--primary-container);
+            border: none;
+            color: var(--on-primary-container);
+            padding: 8px 16px;
+            border-radius: 999px;
             font-family: 'Manrope', sans-serif;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             margin-right: 10px;
         }
@@ -251,90 +313,59 @@
             font-weight: 700;
             font-size: 13px;
             border-radius: 999px;
-            padding: 10px 22px;
+            padding: 11px 22px;
             cursor: pointer;
             border: none;
-            transition: transform 0.12s ease, box-shadow 0.12s ease;
+            transition: transform 0.15s cubic-bezier(0.2,0.8,0.2,1), box-shadow 0.15s ease, background 0.15s ease;
         }
         .btn:hover { transform: translateY(-1px); }
+        .btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none !important;
+        }
         .btn-primary {
-            background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-            color: var(--bg-deep);
-            box-shadow: 0 8px 20px rgba(201,162,75,0.35);
+            background: var(--primary);
+            color: var(--on-primary);
+            box-shadow: 0 10px 24px rgba(103,92,88,0.35);
         }
+        .btn-primary:hover { background: #574e4a; }
         .btn-ghost {
-            background: transparent;
-            color: var(--ivory);
-            border: 1px solid var(--gold-line);
+            background: var(--primary-container);
+            color: var(--on-primary-container);
+            border: 1px solid transparent;
         }
-
-        .field-label {
-            display: block;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin: 14px 0 6px;
-        }
-
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 4px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.12);
-            outline: none;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--gold-bright);
-            border: 2px solid var(--bg-deep);
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-        }
-        input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--gold-bright);
-            border: 2px solid var(--bg-deep);
-            cursor: pointer;
-        }
+        .btn-ghost:hover { background: #efdcd4; }
+        .btn-sm { padding: 8px 16px; font-size: 12px; }
 
         select {
             width: 100%;
-            padding: 9px 12px;
-            border-radius: 8px;
-            background: var(--bg-deep);
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: var(--surface-band);
             color: var(--ivory);
-            border: 1px solid var(--gold-line);
+            border: none;
             font-family: 'Manrope', sans-serif;
             font-size: 13px;
             margin-bottom: 14px;
         }
 
         .status-line {
-            font-size: 13px;
-            margin-top: 4px;
+            font-size: 12.5px;
+            margin-top: 6px;
         }
         .preview-box img {
-            width: 56px;
-            height: 56px;
+            width: 48px;
+            height: 48px;
             object-fit: contain;
-            border-radius: 8px;
-            background: var(--bg-deep);
-            border: 1px solid var(--gold-line);
+            border-radius: 10px;
+            background: var(--surface-band);
         }
 
-        .deal-result {
-            margin-top: 16px;
-        }
+        .deal-result { margin-top: 18px; }
         .deal-card {
-            border-left: 3px solid var(--gold);
-            padding: 4px 0 4px 14px;
+            border-left: 3px solid var(--primary);
+            padding: 4px 0 4px 16px;
         }
         .deal-card .eyebrow-mini {
             font-size: 12px;
@@ -342,164 +373,366 @@
             margin-bottom: 6px;
         }
         .deal-card .title {
-            font-family: 'Fraunces', serif;
+            font-family: 'Playfair Display', serif;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 17px;
             line-height: 1.35;
             margin-bottom: 4px;
         }
         .deal-card .price {
             color: var(--success);
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 6px;
         }
         .deal-card a {
             color: var(--gold-bright);
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
         }
         .deal-card a:hover { text-decoration: underline; }
 
         .match-result {
-            margin-top: 12px;
+            margin-top: 14px;
             font-size: 13px;
             line-height: 1.6;
-            padding: 10px 12px;
-            border-radius: 8px;
+            padding: 12px 14px;
+            border-radius: 12px;
             border-left: 3px solid var(--gold-line);
-            background: var(--panel-soft);
+            background: var(--surface-band);
         }
         .match-result.excellent, .match-result.good { border-left-color: var(--success); color: var(--ivory); }
         .match-result.fair { border-left-color: var(--warn); color: var(--ivory); }
         .match-result.poor { border-left-color: var(--danger); color: var(--ivory); }
+
+        /* ---------- Footer ---------- */
+        .site-footer {
+            margin-top: 72px;
+            padding: 36px 20px;
+            text-align: center;
+            border-top: 1px solid var(--gold-line);
+        }
+        .site-footer .brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.04em;
+            color: var(--ivory);
+            margin-bottom: 6px;
+        }
+        .site-footer p {
+            font-size: 12px;
+            color: var(--muted);
+            margin: 0;
+        }
     </style>
 </head>
 <body>
 
-    <div class="eyebrow">AI Stylist · Live Try-On</div>
-    <h1>Glam Mirror</h1>
-    <div class="rule"></div>
-    <p class="subtitle">Your face, your undertone, your shade — matched and tried on in real time.</p>
+    <nav class="glass-nav">
+        <span class="brand">GLAM MIRROR</span>
+        <span class="tag">AI Stylist</span>
+    </nav>
 
-    <div class="mirror-wrap">
-        <div class="mirror-frame">
-            <div class="mirror-inner">
-                <img src="{{ url_for('video_feed') }}" width="640" height="480">
-            </div>
-        </div>
-        <div id="status">Checking face detection status...</div>
+    <div class="hero-top">
+        <div class="eyebrow">Live Try-On</div>
+        <h1>Your Look Today,<br><em>Reimagined.</em></h1>
+        <p class="subtitle">Your face, your undertone, your shade — matched and tried on in real time.</p>
     </div>
 
-    <div class="tray-label">The Vanity Tray</div>
-
-    <div class="grid">
-
-        <div class="card">
-            <div class="card-head">
-                <div class="badge">U</div>
-                <h2>Skin Undertone</h2>
+    <!-- The single, persistent mirror <img> + its face-detection status.
+         This whole bundle gets MOVED (not recreated) into whichever
+         category page's mirror-slot is currently active — see placeMirror()
+         in the script below. There is deliberately only ever one
+         <img src="/video_feed"> in the entire document: creating one per
+         page would open multiple simultaneous connections to the same
+         webcam stream. When Home is showing (no mirror there), it parks
+         here, hidden but still connected/decoding in the background. -->
+    <div id="mirror-holder" style="display:none;">
+        <div class="mirror-wrap" id="mirror-wrap">
+            <div class="mirror-frame">
+                <div class="mirror-inner">
+                    <img id="mirror-video" src="{{ url_for('video_feed') }}" width="640" height="480">
+                    <img id="mirror-photo" style="display:none;" width="640" height="480">
+                </div>
             </div>
-            <div class="card-divider"></div>
-            <div class="swatch-row">
-                <div class="swatch" id="swatch" style="background-color:#888;"></div>
-                <div>
+            <div id="status">Checking face detection status...</div>
+
+            <!-- Photo source toggle — shared across Makeup/Jewelry/Clothes
+                 since this whole bundle travels with the mirror. Picking a
+                 photo here carries over to every page (see camera.active_photo). -->
+            <div id="photo-mode-controls" style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+                <label class="btn btn-ghost btn-sm" style="cursor:pointer; margin:0;">
+                    <span class="material-symbols-outlined" style="font-size:15px;">image</span>
+                    Upload Your Photo
+                    <input type="file" id="user-photo-upload" accept="image/*" style="display:none;">
+                </label>
+                <button id="use-capture-btn" class="btn btn-ghost btn-sm">
+                    <span class="material-symbols-outlined" style="font-size:15px;">photo_camera</span>
+                    Use Live Capture
+                </button>
+                <button id="back-to-live-btn" class="btn btn-ghost btn-sm" style="display:none;">↩ Back to Live</button>
+            </div>
+            <div id="photo-mode-status" class="status-line" style="text-align:center; margin-top:6px;"></div>
+        </div>
+    </div>
+
+    <!-- ============ HOME ============ -->
+    <div id="page-home">
+        <section class="section" style="text-align:center; padding-top:8px;">
+            <div class="undertone-strip" style="display:inline-flex;">
+                <div class="swatch" id="swatch" style="background-color:#ccc;"></div>
+                <div class="undertone-text">
                     <div class="undertone-label" id="undertone-label">Analyzing…</div>
                     <div class="hex-code" id="hex-code">—</div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="card">
-            <div class="card-head">
-                <div class="badge">M</div>
-                <h2>Match a Lipstick Photo</h2>
+        <section class="section">
+            <div class="section-head">
+                <div class="eyebrow">Choose a Category</div>
+                <h2>What Would You Like to Try?</h2>
             </div>
-            <div class="card-divider"></div>
-            <p class="desc">Upload a photo of a lipstick — we'll try it on and tell you if the tone suits you.</p>
-            <input type="file" id="lipstick-product-upload" accept="image/*">
-            <div id="lipstick-product-preview" class="preview-box"></div>
-            <div id="lipstick-product-status" class="status-line"></div>
-            <div id="lipstick-match-result" class="match-result"></div>
-        </div>
-
-        <div class="card">
-            <div class="card-head">
-                <div class="badge">F</div>
-                <h2>Match a Foundation Photo</h2>
+            <div class="grid">
+                <div class="card category-card" data-page="makeup">
+                    <div class="card-head">
+                        <div class="badge"><span class="material-symbols-outlined">colorize</span></div>
+                        <h2>Makeup</h2>
+                    </div>
+                    <p class="desc">Lipstick &amp; foundation — applied live to your reflection.</p>
+                </div>
+                <div class="card category-card" data-page="jewelry">
+                    <div class="card-head">
+                        <div class="badge"><span class="material-symbols-outlined">diamond</span></div>
+                        <h2>Jewelry</h2>
+                    </div>
+                    <p class="desc">Earrings &amp; necklaces — a realistic AI-generated photo.</p>
+                </div>
+                <div class="card category-card" data-page="clothes">
+                    <div class="card-head">
+                        <div class="badge"><span class="material-symbols-outlined">checkroom</span></div>
+                        <h2>Clothes</h2>
+                    </div>
+                    <p class="desc">A garment of your choice — a realistic AI-generated photo.</p>
+                </div>
             </div>
-            <div class="card-divider"></div>
-            <p class="desc">Upload a photo of a foundation — we'll try it on and compare it to your actual skin tone.</p>
-            <input type="file" id="foundation-product-upload" accept="image/*">
-            <div id="foundation-product-preview" class="preview-box"></div>
-            <div id="foundation-product-status" class="status-line"></div>
-            <div id="foundation-match-result" class="match-result"></div>
-            <button id="clear-foundation-btn" class="btn btn-ghost" style="margin-top:12px;">
-                Remove Foundation
-            </button>
-        </div>
+        </section>
 
-        <div class="card">
-            <div class="card-head">
-                <div class="badge">E</div>
-                <h2>Try On Earrings</h2>
+        <section class="section-band">
+            <div class="section">
+                <div class="section-head">
+                    <div class="eyebrow">Bespoke Pricing</div>
+                    <h2>Shop The Look</h2>
+                    <p>Real, best-priced products matched to your detected undertone</p>
+                </div>
+                <div class="grid grid-narrow">
+                    <div class="card">
+                        <div class="card-head">
+                            <div class="badge"><span class="material-symbols-outlined">shopping_bag</span></div>
+                            <h2>Find the Best Price</h2>
+                        </div>
+                        <p class="desc">Pick a product type — we'll match it to your detected undertone.</p>
+                        <select id="deal-product-type">
+                            <option value="lipstick">Lipstick</option>
+                            <option value="foundation">Foundation</option>
+                        </select>
+                        <button id="find-deal-btn" class="btn btn-primary" style="width:100%;">Find Best Deal</button>
+                        <div id="deal-result" class="deal-result"></div>
+                    </div>
+                </div>
             </div>
-            <div class="card-divider"></div>
-            <p class="desc">Upload a photo of an earring — background is removed automatically.</p>
-            <input type="file" id="earring-upload" accept="image/*">
-            <div id="earring-preview" class="preview-box"></div>
-            <div id="earring-status" class="status-line"></div>
-            <button id="clear-earring-btn" class="btn btn-ghost" style="margin-top:12px;">
-                Use Default Studs
-            </button>
-
-            <label class="field-label">Size</label>
-            <input type="range" id="earring-scale" min="0.3" max="3.0" step="0.05" value="1.0">
-
-            <label class="field-label">Horizontal Position</label>
-            <input type="range" id="earring-horizontal" min="-0.3" max="0.3" step="0.01" value="0">
-
-            <label class="field-label">Vertical Position</label>
-            <input type="range" id="earring-vertical" min="-0.3" max="0.3" step="0.01" value="0">
-        </div>
-
-        <div class="card">
-            <div class="card-head">
-                <div class="badge">N</div>
-                <h2>Try On a Necklace</h2>
-            </div>
-            <div class="card-divider"></div>
-            <p class="desc">Upload a photo of a necklace — anchored to your shoulders.</p>
-            <input type="file" id="necklace-upload" accept="image/*">
-            <div id="necklace-preview" class="preview-box"></div>
-            <div id="necklace-status" class="status-line"></div>
-
-            <label class="field-label">Vertical Position</label>
-            <input type="range" id="necklace-offset" min="-0.4" max="0.4" step="0.01" value="0">
-
-            <label class="field-label">Size</label>
-            <input type="range" id="necklace-scale" min="0.4" max="2.0" step="0.05" value="1.0">
-        </div>
-
-        <div class="card">
-            <div class="card-head">
-                <div class="badge">$</div>
-                <h2>Best Deal Finder</h2>
-            </div>
-            <div class="card-divider"></div>
-            <p class="desc">Finds real, best-priced products matching your detected undertone.</p>
-            <select id="deal-product-type">
-                <option value="lipstick">Lipstick</option>
-                <option value="foundation">Foundation</option>
-            </select>
-            <button id="find-deal-btn" class="btn btn-primary">Find Best Deal</button>
-            <div id="deal-result" class="deal-result"></div>
-        </div>
-
+        </section>
     </div>
 
+    <!-- ============ MAKEUP ============ -->
+    <div id="page-makeup" style="display:none;">
+        <section class="section">
+            <button class="btn btn-ghost back-link" data-page="home">← Back to Home</button>
+            <div id="mirror-slot-makeup" class="mirror-slot"></div>
+            <div class="section-head">
+                <div class="eyebrow">Live Try-On</div>
+                <h2>Makeup</h2>
+                <p>Applies live to the mirror above — exactly as it always has</p>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="card-head">
+                        <div class="badge"><span class="material-symbols-outlined">colorize</span></div>
+                        <h2>Match a Lipstick</h2>
+                    </div>
+                    <p class="desc">Upload a photo of a lipstick — we'll try it on and tell you if the tone suits you.</p>
+                    <input type="file" id="lipstick-product-upload" accept="image/*">
+                    <div id="lipstick-product-preview" class="preview-box"></div>
+                    <div id="lipstick-product-status" class="status-line"></div>
+                    <div id="lipstick-match-result" class="match-result"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-head">
+                        <div class="badge"><span class="material-symbols-outlined">water_drop</span></div>
+                        <h2>Match a Foundation</h2>
+                    </div>
+                    <p class="desc">Upload a photo of a foundation — we'll compare it to your actual skin tone.</p>
+                    <input type="file" id="foundation-product-upload" accept="image/*">
+                    <div id="foundation-product-preview" class="preview-box"></div>
+                    <div id="foundation-product-status" class="status-line"></div>
+                    <div id="foundation-match-result" class="match-result"></div>
+                    <button id="clear-foundation-btn" class="btn btn-ghost btn-sm" style="margin-top:14px;">
+                        Remove Foundation
+                    </button>
+                </div>
+            </div>
+
+            <div style="text-align:center; margin-top:36px;">
+                <button id="capture-photo-btn" class="btn btn-primary">
+                    📸 Capture Photo
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ JEWELRY ============ -->
+    <div id="page-jewelry" style="display:none;">
+        <section class="section">
+            <button class="btn btn-ghost back-link" data-page="home">← Back to Home</button>
+            <div id="mirror-slot-jewelry" class="mirror-slot"></div>
+            <div class="section-head">
+                <div class="eyebrow">AI Try-On</div>
+                <h2>Jewelry</h2>
+                <p>Upload earrings and/or a necklace below</p>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="card-head">
+                        <div class="badge"><span class="material-symbols-outlined">diamond</span></div>
+                        <h2>Earrings</h2>
+                    </div>
+                    <p class="desc">Upload a photo of an earring — background is removed automatically.</p>
+                    <input type="file" id="earring-upload" accept="image/*">
+                    <div id="earring-preview" class="preview-box"></div>
+                    <div id="earring-status" class="status-line"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-head">
+                        <div class="badge"><span class="material-symbols-outlined">auto_awesome</span></div>
+                        <h2>Necklace</h2>
+                    </div>
+                    <p class="desc">Upload a photo of a necklace — background is removed automatically.</p>
+                    <input type="file" id="necklace-upload" accept="image/*">
+                    <div id="necklace-preview" class="preview-box"></div>
+                    <div id="necklace-status" class="status-line"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ CLOTHES ============ -->
+    <div id="page-clothes" style="display:none;">
+        <section class="section">
+            <button class="btn btn-ghost back-link" data-page="home">← Back to Home</button>
+            <div id="mirror-slot-clothes" class="mirror-slot"></div>
+            <div class="section-head">
+                <div class="eyebrow">AI Try-On</div>
+                <h2>Clothes</h2>
+                <p>Upload a garment below</p>
+            </div>
+
+            <div class="grid grid-narrow">
+                <div class="card">
+                    <div class="card-head">
+                        <div class="badge"><span class="material-symbols-outlined">checkroom</span></div>
+                        <h2>Clothing</h2>
+                    </div>
+                    <p class="desc">Upload a clothing photo — background is removed automatically.</p>
+                    <input type="file" id="clothing-upload" accept="image/*">
+                    <div id="clothing-preview" class="preview-box"></div>
+                    <div id="clothing-status" class="status-line"></div>
+                    <div id="clothing-match-result" class="match-result"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ SHARED: Capture & Enhance with AI (Jewelry + Clothes only) ============ -->
+    <div id="enhance-panel" style="display:none;">
+        <section class="section" style="text-align:center; margin-top:8px; margin-bottom:8px;">
+            <div id="enhance-summary" class="status-line"></div>
+            <button id="enhance-ai-btn" class="btn btn-primary" style="margin-top:8px;" disabled>
+                <span class="material-symbols-outlined" style="font-size:16px;">auto_awesome</span>
+                Capture &amp; Enhance with AI
+            </button>
+            <div id="enhance-ai-status" class="status-line" style="margin-top:8px;"></div>
+            <p style="font-size:12px; color:var(--muted); max-width:420px; margin:14px auto 0; line-height:1.6;">
+                AI image generation takes a few seconds and costs a small amount per use, so this works on a captured photo rather than live.
+            </p>
+        </section>
+    </div>
+
+    <!-- ============ SHARED: capture/enhance result ============ -->
+    <div id="capture-result" style="display:none; margin-top:26px; text-align:center;">
+        <img id="captured-image" style="width:560px; max-width:82vw; border-radius:20px; box-shadow:0 30px 60px var(--shadow-tint);">
+        <div style="margin-top:16px; display:flex; gap:12px; justify-content:center;">
+            <a id="download-capture-link" download="glam-mirror-look.jpg" class="btn btn-primary">Download</a>
+            <button id="close-capture-btn" class="btn btn-ghost">Close</button>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="brand">GLAM MIRROR</div>
+        <p>AI-matched beauty, tried on in real time.</p>
+    </footer>
+
     <script>
+        // ---------- Page navigation (Home / Makeup / Jewelry / Clothes) ----------
+        // Simple client-side show/hide — no router needed for 4 view states.
+        const PAGES = ['home', 'makeup', 'jewelry', 'clothes'];
+        const enhancePanelEl = document.getElementById('enhance-panel');
+
+        // The mirror <img> + its status badge is a SINGLE persistent DOM
+        // node (see the mirror-holder comment above it in the HTML). It
+        // never gets destroyed or recreated — only moved between
+        // containers via appendChild, which reparents the existing node
+        // in place without touching its src or interrupting the underlying
+        // /video_feed connection. Creating a fresh <img> per page instead
+        // would open a separate simultaneous stream connection per page,
+        // which is exactly what this avoids.
+        const mirrorWrapEl = document.getElementById('mirror-wrap');
+        const mirrorHolderEl = document.getElementById('mirror-holder');
+        const MIRROR_SLOTS = {
+            makeup: document.getElementById('mirror-slot-makeup'),
+            jewelry: document.getElementById('mirror-slot-jewelry'),
+            clothes: document.getElementById('mirror-slot-clothes'),
+        };
+
+        function placeMirror(name) {
+            const slot = MIRROR_SLOTS[name];
+            (slot || mirrorHolderEl).appendChild(mirrorWrapEl);
+        }
+
+        function showPage(name) {
+            PAGES.forEach(p => {
+                document.getElementById('page-' + p).style.display = (p === name) ? 'block' : 'none';
+            });
+
+            placeMirror(name);
+
+            const showEnhance = (name === 'jewelry' || name === 'clothes');
+            enhancePanelEl.style.display = showEnhance ? 'block' : 'none';
+            if (showEnhance) refreshEnhanceSummary();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('[data-page]').forEach(el => {
+            el.addEventListener('click', () => showPage(el.dataset.page));
+        });
+
+        // ---------- Live status polling (Home/Makeup) ----------
         async function pollStatus() {
             try {
                 const res = await fetch('/status');
@@ -532,194 +765,138 @@
         pollStatus();
         pollSkinTone();
 
-        // Earring upload
-        const earringInput = document.getElementById('earring-upload');
-        const earringStatus = document.getElementById('earring-status');
-        const earringPreview = document.getElementById('earring-preview');
+        // ---------- Photo source toggle (shared across all 3 category pages) ----------
+        // Lives inside the same reparented mirror bundle, so "consistent on
+        // all 3 pages" is automatic — it's the same DOM node everywhere,
+        // not 3 copies. mirror-photo is a SEPARATE <img> from mirror-video
+        // (which never changes its src, ever) — swapping between them is
+        // just a display toggle, so the live /video_feed connection is
+        // never touched by entering/leaving photo mode.
+        const mirrorVideoEl = document.getElementById('mirror-video');
+        const mirrorPhotoEl = document.getElementById('mirror-photo');
+        const userPhotoUploadInput = document.getElementById('user-photo-upload');
+        const useCaptureBtn = document.getElementById('use-capture-btn');
+        const backToLiveBtn = document.getElementById('back-to-live-btn');
+        const photoModeStatus = document.getElementById('photo-mode-status');
+        let photoModeActive = false;
 
-        earringInput.addEventListener('change', async () => {
-            const file = earringInput.files[0];
-            if (!file) return;
-
-            // Show a quick local preview while uploading
-            const reader = new FileReader();
-            reader.onload = e => {
-                earringPreview.innerHTML = `<img src="${e.target.result}">`;
-            };
-            reader.readAsDataURL(file);
-
-            earringStatus.innerText = "Removing background & processing...";
-            earringStatus.style.color = "var(--warn)";
-
-            const formData = new FormData();
-            formData.append('image', file);
-
-            try {
-                const res = await fetch('/upload_earring', { method: 'POST', body: formData });
-                const data = await res.json();
-                if (data.success) {
-                    earringStatus.innerText = "✅ Wearing your uploaded earring!";
-                    earringStatus.style.color = "var(--success)";
-                } else {
-                    earringStatus.innerText = "⚠️ " + (data.error || "Upload failed");
-                    earringStatus.style.color = "var(--danger)";
-                }
-            } catch (e) {
-                earringStatus.innerText = "⚠️ Upload failed — check server is running.";
-                earringStatus.style.color = "var(--danger)";
-            }
-        });
-
-        document.getElementById('clear-earring-btn').addEventListener('click', async () => {
-            try {
-                await fetch('/set_jewelry_style', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ style: 'stud' })
-                });
-                earringStatus.innerText = "Switched back to default studs.";
-                earringStatus.style.color = "var(--success)";
-                earringPreview.innerHTML = '';
-                earringInput.value = '';
-            } catch (e) {
-                console.error('Failed to reset jewelry style', e);
-            }
-        });
-
-        // Necklace upload
-        const necklaceInput = document.getElementById('necklace-upload');
-        const necklaceStatus = document.getElementById('necklace-status');
-        const necklacePreview = document.getElementById('necklace-preview');
-
-        necklaceInput.addEventListener('change', async () => {
-            const file = necklaceInput.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = e => {
-                necklacePreview.innerHTML = `<img src="${e.target.result}">`;
-            };
-            reader.readAsDataURL(file);
-
-            necklaceStatus.innerText = "Removing background & processing...";
-            necklaceStatus.style.color = "var(--warn)";
-
-            const formData = new FormData();
-            formData.append('image', file);
-
-            try {
-                const res = await fetch('/upload_necklace', { method: 'POST', body: formData });
-                const data = await res.json();
-                if (data.success) {
-                    necklaceStatus.innerText = "✅ Wearing your uploaded necklace!";
-                    necklaceStatus.style.color = "var(--success)";
-                } else {
-                    necklaceStatus.innerText = "⚠️ " + (data.error || "Upload failed");
-                    necklaceStatus.style.color = "var(--danger)";
-                }
-            } catch (e) {
-                necklaceStatus.innerText = "⚠️ Upload failed — check server is running.";
-                necklaceStatus.style.color = "var(--danger)";
-            }
-        });
-
-        // Necklace position/size sliders — live-adjustable since necklace
-        // photos vary a lot in proportions
-        async function sendNecklaceAdjustment(payload) {
-            try {
-                await fetch('/adjust_necklace', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-            } catch (e) {
-                console.error('Failed to adjust necklace', e);
-            }
+        function refreshPhotoRender() {
+            mirrorPhotoEl.src = '/photo_render?t=' + Date.now();
         }
 
-        const necklaceOffsetSlider = document.getElementById('necklace-offset');
-        const necklaceScaleSlider = document.getElementById('necklace-scale');
+        function maybeRefreshPhoto() {
+            if (photoModeActive) refreshPhotoRender();
+        }
 
-        necklaceOffsetSlider.addEventListener('input', () => {
-            sendNecklaceAdjustment({ offset_adjust: parseFloat(necklaceOffsetSlider.value) });
-        });
+        function enterPhotoMode() {
+            photoModeActive = true;
+            mirrorVideoEl.style.display = 'none';
+            mirrorPhotoEl.style.display = 'block';
+            useCaptureBtn.style.display = 'none';
+            userPhotoUploadInput.closest('label').style.display = 'none';
+            backToLiveBtn.style.display = 'inline-block';
+            photoModeStatus.innerText = '';
+            refreshPhotoRender();
+        }
 
-        necklaceScaleSlider.addEventListener('input', () => {
-            sendNecklaceAdjustment({ scale_adjust: parseFloat(necklaceScaleSlider.value) });
-        });
+        userPhotoUploadInput.addEventListener('change', async () => {
+            const file = userPhotoUploadInput.files[0];
+            if (!file) return;
 
-        // Earring size slider
-        const earringScaleSlider = document.getElementById('earring-scale');
-        earringScaleSlider.addEventListener('input', async () => {
+            photoModeStatus.innerText = 'Uploading photo...';
+            photoModeStatus.style.color = 'var(--warn)';
+
+            const formData = new FormData();
+            formData.append('image', file);
+
             try {
-                await fetch('/adjust_earring', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ scale_adjust: parseFloat(earringScaleSlider.value) })
-                });
-            } catch (e) {
-                console.error('Failed to adjust earring size', e);
-            }
-        });
-
-        // Earring horizontal position slider
-        const earringHorizontalSlider = document.getElementById('earring-horizontal');
-        earringHorizontalSlider.addEventListener('input', async () => {
-            try {
-                await fetch('/adjust_earring', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ horizontal_adjust: parseFloat(earringHorizontalSlider.value) })
-                });
-            } catch (e) {
-                console.error('Failed to adjust earring position', e);
-            }
-        });
-
-        // Earring vertical position slider
-        const earringVerticalSlider = document.getElementById('earring-vertical');
-        earringVerticalSlider.addEventListener('input', async () => {
-            try {
-                await fetch('/adjust_earring', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ vertical_adjust: parseFloat(earringVerticalSlider.value) })
-                });
-            } catch (e) {
-                console.error('Failed to adjust earring position', e);
-            }
-        });
-
-        // Best deal finder
-        const findDealBtn = document.getElementById('find-deal-btn');
-        const dealResult = document.getElementById('deal-result');
-        const dealProductType = document.getElementById('deal-product-type');
-
-        findDealBtn.addEventListener('click', async () => {
-            dealResult.innerHTML = '<span style="color:var(--warn);">Searching…</span>';
-            try {
-                const productType = dealProductType.value;
-                const res = await fetch(`/best_deal?product_type=${productType}`);
+                const res = await fetch('/upload_user_photo', { method: 'POST', body: formData });
                 const data = await res.json();
                 if (data.success) {
-                    const deal = data.deal;
-                    dealResult.innerHTML = `
-                        <div class="deal-card">
-                            <div class="eyebrow-mini">For your <b style="color:var(--ivory);">${data.undertone}</b> undertone</div>
-                            <div class="title">${deal.title}</div>
-                            <div class="price">₹${deal.price} · ${deal.platform}</div>
-                            <a href="${deal.url}" target="_blank">View real product on Nykaa →</a>
-                        </div>
-                    `;
+                    enterPhotoMode();
                 } else {
-                    dealResult.innerHTML = `<span style="color:var(--danger);">⚠️ ${data.error || 'No deal found'}</span>`;
+                    photoModeStatus.innerText = '⚠️ ' + (data.error || 'Upload failed');
+                    photoModeStatus.style.color = 'var(--danger)';
                 }
             } catch (e) {
-                dealResult.innerHTML = '<span style="color:var(--danger);">⚠️ Request failed — check server is running.</span>';
+                photoModeStatus.innerText = '⚠️ Upload failed — check server is running.';
+                photoModeStatus.style.color = 'var(--danger)';
+            }
+            userPhotoUploadInput.value = '';
+        });
+
+        useCaptureBtn.addEventListener('click', async () => {
+            photoModeStatus.innerText = 'Capturing from camera...';
+            photoModeStatus.style.color = 'var(--warn)';
+            try {
+                const res = await fetch('/use_camera_capture', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    enterPhotoMode();
+                } else {
+                    photoModeStatus.innerText = '⚠️ ' + (data.error || 'Capture failed');
+                    photoModeStatus.style.color = 'var(--danger)';
+                }
+            } catch (e) {
+                photoModeStatus.innerText = '⚠️ Capture failed — check server is running.';
+                photoModeStatus.style.color = 'var(--danger)';
             }
         });
 
-        // Lipstick product photo match
+        backToLiveBtn.addEventListener('click', async () => {
+            photoModeActive = false;
+            mirrorPhotoEl.style.display = 'none';
+            mirrorVideoEl.style.display = 'block';
+            useCaptureBtn.style.display = 'inline-block';
+            userPhotoUploadInput.closest('label').style.display = '';
+            backToLiveBtn.style.display = 'none';
+            photoModeStatus.innerText = '';
+            try {
+                await fetch('/clear_photo', { method: 'POST' });
+            } catch (e) {
+                console.error('Failed to clear photo', e);
+            }
+        });
+
+        // ---------- Shared capture/enhance result panel ----------
+        const captureResult = document.getElementById('capture-result');
+        const capturedImage = document.getElementById('captured-image');
+        const downloadLink = document.getElementById('download-capture-link');
+        const closeCaptureBtn = document.getElementById('close-capture-btn');
+
+        closeCaptureBtn.addEventListener('click', () => {
+            captureResult.style.display = 'none';
+        });
+
+        // ---------- Makeup: plain live capture (unchanged behavior) ----------
+        const captureBtn = document.getElementById('capture-photo-btn');
+
+        captureBtn.addEventListener('click', async () => {
+            captureBtn.disabled = true;
+            captureBtn.innerText = 'Capturing...';
+            try {
+                // cache-bust; if a static photo is active, capture THAT
+                // (with makeup applied) rather than silently falling back
+                // to the live feed's snapshot
+                const url = photoModeActive ? '/photo_render?t=' + Date.now() : '/snapshot?t=' + Date.now();
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Snapshot request failed');
+                const blob = await res.blob();
+                const objectUrl = URL.createObjectURL(blob);
+
+                capturedImage.src = objectUrl;
+                downloadLink.href = objectUrl;
+                captureResult.style.display = 'block';
+                captureResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } catch (err) {
+                alert('Capture failed — check that the server is running and your face is in frame, then try again.');
+            } finally {
+                captureBtn.disabled = false;
+                captureBtn.innerText = '📸 Capture Photo';
+            }
+        });
+
+        // ---------- Lipstick product photo match (Makeup, live) ----------
         const lipProductInput = document.getElementById('lipstick-product-upload');
         const lipProductStatus = document.getElementById('lipstick-product-status');
         const lipProductPreview = document.getElementById('lipstick-product-preview');
@@ -756,6 +933,7 @@
                         lipMatchResult.innerText = data.match_note;
                         lipMatchResult.className = 'match-result';
                     }
+                    maybeRefreshPhoto();
                 } else {
                     lipProductStatus.innerText = "⚠️ " + (data.error || "Upload failed");
                     lipProductStatus.style.color = "var(--danger)";
@@ -766,7 +944,7 @@
             }
         });
 
-        // Foundation product photo match
+        // ---------- Foundation product photo match (Makeup, live) ----------
         const foundationInput = document.getElementById('foundation-product-upload');
         const foundationStatus = document.getElementById('foundation-product-status');
         const foundationPreview = document.getElementById('foundation-product-preview');
@@ -803,6 +981,7 @@
                         foundationMatchResult.innerText = data.match_note;
                         foundationMatchResult.className = 'match-result';
                     }
+                    maybeRefreshPhoto();
                 } else {
                     foundationStatus.innerText = "⚠️ " + (data.error || "Upload failed");
                     foundationStatus.style.color = "var(--danger)";
@@ -822,10 +1001,239 @@
                 foundationInput.value = '';
                 foundationMatchResult.innerHTML = '';
                 foundationMatchResult.className = 'match-result';
+                maybeRefreshPhoto();
             } catch (e) {
                 console.error('Failed to clear foundation', e);
             }
         });
+
+        // ---------- Jewelry: earring upload (AI reference only) ----------
+        const earringInput = document.getElementById('earring-upload');
+        const earringStatus = document.getElementById('earring-status');
+        const earringPreview = document.getElementById('earring-preview');
+
+        earringInput.addEventListener('change', async () => {
+            const file = earringInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                earringPreview.innerHTML = `<img src="${e.target.result}">`;
+            };
+            reader.readAsDataURL(file);
+
+            earringStatus.innerText = "Removing background & processing...";
+            earringStatus.style.color = "var(--warn)";
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/upload_earring', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    earringStatus.innerText = "✅ Ready — click \"Capture & Enhance with AI\" below.";
+                    earringStatus.style.color = "var(--success)";
+                    refreshEnhanceSummary();
+                } else {
+                    earringStatus.innerText = "⚠️ " + (data.error || "Upload failed");
+                    earringStatus.style.color = "var(--danger)";
+                }
+            } catch (e) {
+                earringStatus.innerText = "⚠️ Upload failed — check server is running.";
+                earringStatus.style.color = "var(--danger)";
+            }
+        });
+
+        // ---------- Jewelry: necklace upload (AI reference only) ----------
+        const necklaceInput = document.getElementById('necklace-upload');
+        const necklaceStatus = document.getElementById('necklace-status');
+        const necklacePreview = document.getElementById('necklace-preview');
+
+        necklaceInput.addEventListener('change', async () => {
+            const file = necklaceInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                necklacePreview.innerHTML = `<img src="${e.target.result}">`;
+            };
+            reader.readAsDataURL(file);
+
+            necklaceStatus.innerText = "Removing background & processing...";
+            necklaceStatus.style.color = "var(--warn)";
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/upload_necklace', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    necklaceStatus.innerText = "✅ Ready — click \"Capture & Enhance with AI\" below.";
+                    necklaceStatus.style.color = "var(--success)";
+                    refreshEnhanceSummary();
+                } else {
+                    necklaceStatus.innerText = "⚠️ " + (data.error || "Upload failed");
+                    necklaceStatus.style.color = "var(--danger)";
+                }
+            } catch (e) {
+                necklaceStatus.innerText = "⚠️ Upload failed — check server is running.";
+                necklaceStatus.style.color = "var(--danger)";
+            }
+        });
+
+        // ---------- Clothes: clothing upload (AI reference + undertone match) ----------
+        const clothingInput = document.getElementById('clothing-upload');
+        const clothingStatus = document.getElementById('clothing-status');
+        const clothingPreview = document.getElementById('clothing-preview');
+        const clothingMatchResult = document.getElementById('clothing-match-result');
+
+        clothingInput.addEventListener('change', async () => {
+            const file = clothingInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                clothingPreview.innerHTML = `<img src="${e.target.result}">`;
+            };
+            reader.readAsDataURL(file);
+
+            clothingStatus.innerText = "Removing background & processing...";
+            clothingStatus.style.color = "var(--warn)";
+            clothingMatchResult.innerHTML = '';
+            clothingMatchResult.className = 'match-result';
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/upload_clothing', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    clothingStatus.innerText = "✅ Ready — click \"Capture & Enhance with AI\" below.";
+                    clothingStatus.style.color = "var(--success)";
+                    if (data.match) {
+                        clothingMatchResult.innerText = data.match.verdict;
+                        clothingMatchResult.className = 'match-result ' + data.match.quality;
+                    } else {
+                        clothingMatchResult.innerText = data.match_note;
+                        clothingMatchResult.className = 'match-result';
+                    }
+                    refreshEnhanceSummary();
+                } else {
+                    clothingStatus.innerText = "⚠️ " + (data.error || "Upload failed");
+                    clothingStatus.style.color = "var(--danger)";
+                }
+            } catch (e) {
+                clothingStatus.innerText = "⚠️ Upload failed — check server is running.";
+                clothingStatus.style.color = "var(--danger)";
+            }
+        });
+
+        // ---------- Shared: Capture & Enhance with AI (Jewelry + Clothes) ----------
+        // One combined call: captures the live frame server-side and sends
+        // it plus whichever of earring/necklace/clothing are uploaded to
+        // OpenAI in a single images.edit() request — see /enhance_photo.
+        const enhanceAiBtn = document.getElementById('enhance-ai-btn');
+        const enhanceAiStatus = document.getElementById('enhance-ai-status');
+        const enhanceSummary = document.getElementById('enhance-summary');
+
+        // Reflects what's actually uploaded SERVER-SIDE right now (not
+        // frontend-tracked flags, which could drift, e.g. after a page
+        // reload) — so the button is disabled with a clear reason, or
+        // shows exactly what will be sent, before triggering a paid call.
+        async function refreshEnhanceSummary() {
+            try {
+                const res = await fetch('/enhance_status');
+                const data = await res.json();
+                const items = [];
+                if (data.earring) items.push('Earrings');
+                if (data.necklace) items.push('Necklace');
+                if (data.clothing) items.push('Clothing');
+
+                if (items.length === 0) {
+                    enhanceSummary.innerText = 'Upload a jewelry or clothing photo first — nothing to enhance yet.';
+                    enhanceAiBtn.disabled = true;
+                } else {
+                    enhanceSummary.innerText = 'Will add: ' + items.join(', ');
+                    enhanceAiBtn.disabled = false;
+                }
+                enhanceSummary.style.color = 'var(--muted)';
+            } catch (e) {
+                console.error('Failed to refresh enhance summary', e);
+            }
+        }
+
+        enhanceAiBtn.addEventListener('click', async () => {
+            enhanceAiBtn.disabled = true;
+            enhanceAiStatus.innerText = 'Capturing and generating your AI-enhanced photo… this can take up to 30 seconds.';
+            enhanceAiStatus.style.color = 'var(--warn)';
+
+            try {
+                const res = await fetch('/enhance_photo', { method: 'POST' });
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const objectUrl = URL.createObjectURL(blob);
+                    capturedImage.src = objectUrl;
+                    downloadLink.href = objectUrl;
+                    captureResult.style.display = 'block';
+                    captureResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    enhanceAiStatus.innerText = '✅ AI-enhanced photo ready below.';
+                    enhanceAiStatus.style.color = 'var(--success)';
+                } else {
+                    const data = await res.json();
+                    enhanceAiStatus.innerText = '⚠️ ' + (data.error || 'AI enhancement failed.');
+                    enhanceAiStatus.style.color = 'var(--danger)';
+                }
+            } catch (e) {
+                enhanceAiStatus.innerText = '⚠️ Request failed — check server is running.';
+                enhanceAiStatus.style.color = 'var(--danger)';
+            } finally {
+                refreshEnhanceSummary(); // re-syncs disabled state instead of assuming enabled
+            }
+        });
+
+        // ---------- Home: Best deal finder ----------
+        const findDealBtn = document.getElementById('find-deal-btn');
+        const dealResult = document.getElementById('deal-result');
+        const dealProductType = document.getElementById('deal-product-type');
+
+        findDealBtn.addEventListener('click', async () => {
+            dealResult.innerHTML = '<span style="color:var(--warn);">Searching…</span>';
+            try {
+                const productType = dealProductType.value;
+                const res = await fetch(`/best_deal?product_type=${productType}`);
+                const data = await res.json();
+                if (data.success) {
+                    const deal = data.deal;
+                    const ratingHtml = deal.rating
+                        ? `<div style="font-size:12px; color:var(--gold-bright); margin:4px 0;">★ ${deal.rating.stars}/5 (${deal.rating.count.toLocaleString()} ratings)</div>`
+                        : '';
+                    dealResult.innerHTML = `
+                        <div class="deal-card">
+                            <div class="eyebrow-mini">For your <b style="color:var(--ivory);">${data.undertone}</b> undertone</div>
+                            <div class="title">${deal.title}</div>
+                            <div class="price">₹${deal.price} (MRP) · ${deal.platform}</div>
+                            ${ratingHtml}
+                            <a href="${deal.url}" target="_blank">View real product on Nykaa →</a>
+                            <div style="font-size:11px; color:var(--muted); margin-top:8px; line-height:1.5;">
+                                This link opens the product's full shade range — select
+                                <b style="color:var(--ivory);">"${deal.shade}"</b> from the shade options on the page.
+                                Live price/discount may differ from what's shown here.
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    dealResult.innerHTML = `<span style="color:var(--danger);">⚠️ ${data.error || 'No deal found'}</span>`;
+                }
+            } catch (e) {
+                dealResult.innerHTML = '<span style="color:var(--danger);">⚠️ Request failed — check server is running.</span>';
+            }
+        });
+
+        // Start on Home
+        showPage('home');
     </script>
 </body>
 </html>

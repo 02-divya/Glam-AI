@@ -1,10 +1,10 @@
 """
-Extracts the dominant color from an uploaded product photo (lipstick or
-foundation) and judges whether it's a good match for the person's detected
-skin tone.
+Extracts the dominant color from an uploaded product photo (lipstick,
+foundation, or clothing) and judges whether it's a good match for the
+person's detected skin tone.
 
-MATCHING METHODOLOGY (this matters — lipstick and foundation are judged
-completely differently, matching how real makeup matching actually works):
+MATCHING METHODOLOGY (this matters — each product type is judged
+differently, matching how real style/makeup matching actually works):
 
 - FOUNDATION should closely match the person's actual skin color. We measure
   this with perceptual color distance (CIE Lab space, not raw RGB, since Lab
@@ -15,6 +15,14 @@ completely differently, matching how real makeup matching actually works):
   What actually matters is undertone compatibility (a shade with warm
   undertones generally suits warm-undertone skin better, etc). So lipstick
   matching compares undertone classification, not raw color distance.
+
+- CLOTHING, like lipstick, isn't judged by color-closeness to skin either —
+  it's judged by undertone compatibility (a common styling heuristic: warm
+  colors are generally said to flatter warm-undertone skin more, and
+  likewise for cool). The undertone tag on a garment's color is OUR OWN
+  color-family classification (via classify_undertone), the same heuristic
+  used everywhere else in this file — not an official styling authority's
+  judgement.
 """
 
 import cv2
@@ -105,9 +113,28 @@ def judge_foundation_match(product_rgb, skin_rgb):
     return {"verdict": verdict, "quality": quality, "distance": round(distance, 1)}
 
 
-def judge_lipstick_match(product_rgb, skin_undertone):
-    """Lipstick is judged by undertone compatibility, not color closeness."""
+def _get_saturation(rgb):
+    """Returns HSV saturation (0-255) for an RGB color."""
+    r, g, b = rgb
+    patch = np.uint8([[[b, g, r]]])
+    hsv = cv2.cvtColor(patch, cv2.COLOR_BGR2HSV)[0][0]
+    return float(hsv[1])
+
+
+def judge_lipstick_match(product_rgb, skin_undertone, skin_rgb=None):
+    """
+    Lipstick is primarily judged by undertone compatibility, not color
+    closeness to skin (lipstick is meant to contrast with skin, not match
+    it). BUT undertone alone doesn't catch everything a real match should:
+    a shade can share the "correct" undertone and still look washed out if
+    it's too low-contrast against the skin (too close in lightness) or too
+    desaturated/dusty. When skin_rgb is available, we check for that too
+    and downgrade the verdict with an explicit warning — this is the
+    difference between "technically the right undertone family" and
+    "will actually look good on camera."
+    """
     product_undertone = classify_undertone(product_rgb)
+
     if product_undertone == skin_undertone:
         verdict = f"This shade's {product_undertone.lower()} tones suit your {skin_undertone.lower()} undertone well."
         quality = "good"
@@ -118,4 +145,49 @@ def judge_lipstick_match(product_rgb, skin_undertone):
         verdict = (f"This is a {product_undertone.lower()}-toned shade, but you have a {skin_undertone.lower()} "
                    f"undertone — it may clash slightly. A {skin_undertone.lower()}-toned shade would likely suit you better.")
         quality = "poor"
+
+    # Contrast/saturation check — catches "right undertone, still washes you out"
+    if skin_rgb is not None and quality != "poor":
+        lightness_diff = abs(_rgb_to_lab(product_rgb)[0] - _rgb_to_lab(skin_rgb)[0])
+        saturation = _get_saturation(product_rgb)
+
+        low_contrast = lightness_diff < 12
+        low_saturation = saturation < 60
+
+        if low_contrast and low_saturation:
+            verdict += (" That said, this particular shade is quite close in lightness to your skin tone and "
+                        "fairly muted — it may look washed out or barely visible on camera rather than making "
+                        "your lips pop. A more saturated or higher-contrast shade in the same undertone family "
+                        "would likely show up better.")
+            quality = "fair" if quality == "good" else quality
+        elif low_contrast:
+            verdict += (" Note: this shade is close in lightness to your skin tone, so it may read as subtle/"
+                        "low-contrast rather than a bold lip — that may or may not be what you're going for.")
+
+    return {"verdict": verdict, "quality": quality, "product_undertone": product_undertone}
+
+
+def judge_clothing_match(product_rgb, skin_undertone):
+    """
+    Clothing is judged the same way lipstick is: by undertone compatibility,
+    not color-closeness to skin — see the module-level methodology note.
+    Deliberately simpler than judge_lipstick_match (no contrast/saturation
+    check): that check exists specifically to catch a lipstick "washing out"
+    against skin at close range, which isn't a meaningful concern for an
+    entire garment.
+    """
+    product_undertone = classify_undertone(product_rgb)
+
+    if product_undertone == skin_undertone:
+        verdict = f"This {product_undertone.lower()}-toned garment complements your {skin_undertone.lower()} undertone well."
+        quality = "good"
+    elif "Neutral" in (product_undertone, skin_undertone):
+        verdict = (f"This is a {product_undertone.lower()}-toned garment — neutral-friendly, should work "
+                   f"reasonably well with your {skin_undertone.lower()} undertone.")
+        quality = "fair"
+    else:
+        verdict = (f"This is a {product_undertone.lower()}-toned garment, but you have a {skin_undertone.lower()} "
+                   f"undertone — it may clash slightly. A {skin_undertone.lower()}-toned garment would likely suit you better.")
+        quality = "poor"
+
     return {"verdict": verdict, "quality": quality, "product_undertone": product_undertone}
