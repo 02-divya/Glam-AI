@@ -13,3 +13,7 @@ __pycache__/
 # VS Code
 .vscode/
 test_images/
+
+# Auto-generated from commerce/deal_finder.py's seed data on first run —
+# not committed, only the seed code that creates it is.
+products.db

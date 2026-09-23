@@ -21,6 +21,13 @@ uploaded_earring = {"rgba": None}    # set via /upload_earring route in app.py
 uploaded_necklace = {"rgba": None}   # set via /upload_necklace route in app.py
 uploaded_clothing = {"rgba": None}   # set via /upload_clothing route in app.py
 
+# Second clothing reference slot, for the Clothes page's "Compare Side by
+# Side" feature — enhance_captured_photo() is called once per slot so the
+# two garments can be judged against the same base photo independently.
+# `uploaded_clothing` above (slot 1) stays the one used by the shared
+# Jewelry+Clothes "Capture & Enhance with AI" combined flow, unchanged.
+uploaded_clothing_2 = {"rgba": None}  # set via /upload_clothing_2 route in app.py
+
 
 def set_uploaded_earring(rgba_image):
     """Called from app.py after background removal to set the active earring reference image."""
@@ -35,6 +42,11 @@ def set_uploaded_necklace(rgba_image):
 def set_uploaded_clothing(rgba_image):
     """Called from app.py after background removal to set the active clothing reference image."""
     uploaded_clothing["rgba"] = rgba_image
+
+
+def set_uploaded_clothing_2(rgba_image):
+    """Called from app.py after background removal to set the second clothing reference image (Compare Side by Side, slot 2)."""
+    uploaded_clothing_2["rgba"] = rgba_image
 
 
 mp_face_mesh = mp.solutions.face_mesh
